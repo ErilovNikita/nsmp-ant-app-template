@@ -126,7 +126,35 @@ h4.ant-typography {
     padding: 16px 24px;
     background: #f2f2f2;
 }
-
+.ant-table > .ant-table-container > .ant-table-content > table > thead.ant-table-thead > tr > th {
+    font-size: 13px;
+    line-height: 15px;
+    color: #5f5f5f;
+    letter-spacing: 0.03em;
+    text-align: left;
+    font-weight: normal;
+    background-color: transparent !important;
+    border-bottom: none !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > thead.ant-table-thead > tr > th::before {
+    height: 100% !important;
+    display: none !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > thead.ant-table-thead > tr:hover > th::before {
+    display: block !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > thead.ant-table-thead > tr:hover > th {
+    cursor: pointer !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > tbody.ant-table-tbody > tr > td {
+    border-top: 1px solid #d9d9d9 !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > tbody.ant-table-tbody > tr:hover > td {
+    background: #ebebeb !important;
+}
+.ant-table > .ant-table-container > .ant-table-content > table > tbody.ant-table-tbody > tr.ant-table-row-selected > td {
+    background: #f4f4f4 !important;
+}
 pre .string { color: green; }
 pre .number { color: darkorange; }
 pre .boolean { color: blue; }

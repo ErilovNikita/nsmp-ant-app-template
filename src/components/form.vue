@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-    import { ref } from 'vue'
-    import { reactive } from 'vue'
+    import { inject, computed, reactive, ref } from 'vue'
     import type { UnwrapRef } from 'vue'
-    import { SelectProps } from 'ant-design-vue'
     import { IJsApi } from '@nsmp/js-api/src/lib/JsApi'
-    import { inject } from 'vue'
+
+    import { SelectProps } from 'ant-design-vue'
+    import type { TableProps } from 'ant-design-vue'
 
     import AttrGroup from './AttrGroup.vue'
     import PlusIcon from '../assets/icons/plus.svg'
     import EditIcon from '../assets/icons/edit.svg'
     import FilterIcon from '../assets/icons/filter.svg'
     import DeleteIcon from '../assets/icons/delete.svg'
+
     const jsApi = inject('jsApi') as IJsApi
 
     // Интерфейс для формы
@@ -194,12 +195,49 @@
     }
 
     const onFinishModal = (values: any) => {
-        console.log('Success:', values);
-    };
+        console.log('Success:', values)
+    }
 
     const onFinishFailedModal = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
+        console.log('Failed:', errorInfo)
+    }
+
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            width: 150,
+        },
+        {
+            title: 'Age',
+            dataIndex: 'age',
+            width: 150,
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+        },
+    ];
+
+    const data = [...Array(100)].map((_, i) => ({
+        key: i,
+        name: `Edward King ${i}`,
+        age: 32,
+        address: `London, Park Lane no. ${i}`,
+    }))
+
+    const rowSelection = ref({
+        checkStrictly: false,
+        onChange: (selectedRowKeys: (string | number)[], selectedRows:any) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        onSelect: (record:any, selected: boolean, selectedRows: any) => {
+            console.log(record, selected, selectedRows);
+        },
+        onSelectAll: (selected: boolean, selectedRows:any, changeRows:any) => {
+            console.log(selected, selectedRows, changeRows);
+        },
+    })
 
 </script>
 <template>
@@ -452,6 +490,26 @@
                 </a-form-item>
                 </AttrGroup>
             </div>
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="Список обьектов">
+            <a-form-item style="margin-top: -5px !important;">
+                    <a-space :size="8">
+                        <a-space :size="1">
+                            <a-button class="cardButton" type="primary" @click="showModal"><PlusIcon/>Добавить</a-button>
+                            <a-button class="cardButton" type="primary" @click="showModal"><EditIcon/>Редактировать</a-button>
+                        </a-space>
+                        <a-space :size="1">
+                            <a-button class="cardButton" type="primary"><FilterIcon/>Фильтрация</a-button>
+                            <a-button class="cardButton" type="primary"><DeleteIcon/>Удалить</a-button>
+                        </a-space>
+                    </a-space>
+                </a-form-item>
+            <a-table
+                :columns="columns"
+                :data-source="data"
+                :pagination="{ pageSize: 100 }"
+                :row-selection="rowSelection"
+            />
         </a-tab-pane>
     </a-tabs>
 
