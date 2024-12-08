@@ -5,6 +5,7 @@ const themeConfig: Record<string, any> = ref({
         Button: {
             colorPrimary: '#ec8e2b',
             colorPrimaryHover: '#d37513',
+            colorPrimaryActive: '#a45b0f',
             defaultShadow: 'none',
         },
         Checkbox: {
