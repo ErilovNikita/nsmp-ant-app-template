@@ -59,9 +59,9 @@ jest-output/
 *.log.*
 
 # Lock files (if you switch package managers often, uncomment the relevant lines)
-# yarn.lock
-# package-lock.json
-# pnpm-lock.yaml
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
 
 # Lerna
 lerna-debug.log

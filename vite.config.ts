@@ -1,6 +1,8 @@
 import { defineConfig, loadEnv } from 'vite'
+import pkg from './package.json'
 import vue from '@vitejs/plugin-vue'
-import svgLoader from 'vite-svg-loader';
+import svgLoader from 'vite-svg-loader'
+import zipPack from "vite-plugin-zip-pack"
 
 
 export default defineConfig(({ mode }) => {
@@ -9,9 +11,17 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vue(),
-      svgLoader()
+      svgLoader(),
+      zipPack({
+          outDir: 'dist',
+          outFileName: `${env.VITE_APP_CODE}-${process.env.npm_package_version}.zip`
+      })
     ],
     base: "./",
+    define: {
+      __APP_VERSION__: JSON.stringify(pkg.version),
+      __APP_NAME__: JSON.stringify(pkg.name)
+    },
     server: {
       proxy: {
           "/sd/": {
