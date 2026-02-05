@@ -174,7 +174,7 @@ npm run dev
 | `loading` | `Ref<boolean>` | Загрузка данных |
 | `tableData` | `Ref<IObjectListRow[]>` | Данные текущей UI страницы |
 | `allData` | `Ref<IObjectListRow[]>` | Все загруженные данные с API |
-| `selectedRowKeys` | `Ref<(string|number)[]>` | Выбранные строки |
+| `selectedRowKeys` | `Ref<(string\|number)[]>` | Выбранные строки |
 | `rowSelection` | `any` | Конфигурация для Ant Table |
 | `metaClass` | `string` | Класс объектов для API |
 | `columns` | `ColumnsType<any>` | Колонки таблицы |
@@ -216,8 +216,7 @@ const tableController = new TableFieldObjectController({
     enableSelection: true
 })
 ```
-
-```TypeScript
+```vue
 <ObjectList
     :title="'Список пользователей'"
     :showTitle="true"
@@ -236,8 +235,7 @@ const dropdownController = new DropdownFieldObjectController(
     'employee$employee'
 )
 ```
-
-```TypeScript
+```vue
 <a-select
     v-model:value="selectedValue"
     :options="dropdownController.options.value"
@@ -263,8 +261,7 @@ const statusDropdown = new DropdownFieldDictionaryController(
     true
 )
 ```
-
-```TypeScript
+```vue
 <a-select
     v-model:value="selectedStatus"
     :options="statusDropdown.options.value"
@@ -281,7 +278,7 @@ import Alert from '../components/naumen/Alert.vue'
 const alertController = new AlertController(true, 'info', true)
 alert.setMessage('Операция выполнена успешно').show()
 ```
-```TypeScript
+```vue
 <Alert :modelValue="alertController" />
 ```
 
@@ -292,7 +289,7 @@ import Modal from './components/naumen/Modal.vue'
 
 const modalController = new ModalController('Подтверждение действия')
 ```
-```TypeScript
+```vue
 <Modal :controller="modalController">
     <template #form>
         <p>Текст</p>
@@ -321,7 +318,7 @@ const formGroupController = new AttrGroupController('Основные данны
     ['Возраст', 'age']
 ])
 ```
-```TypeScript
+```vue
 <AttrGroup :config="formGroupController" :values="formState"/>
 ```
 
@@ -331,7 +328,7 @@ import { TabGroupController } from '@/utils/fileds'
 
 const tabs = new TabGroupController(1)
 ```
-```TypeScript
+```vue
 <a-tabs v-model:activeKey="tabs.activeTab.value">
     <a-tab-pane key="1" tab="Первая вкладка">Содержимое 1</a-tab-pane>
     <a-tab-pane key="2" tab="Вторая вкладка">Содержимое 2</a-tab-pane>
