@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { watch } from 'vue'
+
 import { AttrGroupController, DropdownFieldObjectController, DropdownFieldDictionaryController, AlertController } from '../utils/fileds'
 import { IFormState } from '../utils/types'
 import { DefaultFormState, AttrNamesMap } from '../utils/config'
@@ -6,7 +8,6 @@ import { DefaultFormState, AttrNamesMap } from '../utils/config'
 import Alert from '../components/naumen/Alert.vue'
 import AttrGroup from '../components/naumen/AttrGroup.vue'
 import Caption from '../components/naumen/Caption.vue'
-import { watch } from 'vue'
 
 const formState: IFormState = DefaultFormState
 
