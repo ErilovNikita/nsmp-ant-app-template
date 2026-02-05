@@ -23,6 +23,9 @@ cd nsmp-ant-app-test
 # Установка зависимостей
 npm install
 
+# Установка кастомной библиотеки
+npm link @nsmp/js-api  
+
 # Запуск dev-сервера
 npm run dev
 ```
