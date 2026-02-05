@@ -55,6 +55,8 @@ const onFinishModal = (values: any) => {
 const onFinishFailedModal = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
 }
+
+showModal()
 </script>
 
 <template>

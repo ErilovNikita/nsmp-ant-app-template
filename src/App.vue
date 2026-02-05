@@ -2,17 +2,18 @@
 import themeConfig from './themeProvider'
 import { watch } from 'vue'
 
-import { TabGroupController, TableFieldObjectController } from './utils/fileds'
+import { TabGroupController, TableFieldObjectController, ModalController, AlertController} from './utils/fileds'
 
 import FullForm from './components/FullForm.vue'
-import ModalForm from './components/ModalForm.vue'
+
+import Modal from './components/naumen/Modal.vue'
 import ObjectList from './components/naumen/ObjectList.vue'
 
 import PlusIcon from './assets/icons/plus.svg'
 import EditIcon from './assets/icons/edit.svg'
 import DeleteIcon from './assets/icons/delete.svg'
 import ArchiveIcon from './assets/icons/archive.svg'
-
+import Alert from './components/naumen/Alert.vue'
 
 const tabGroupController = new TabGroupController()
 const usersListController = new TableFieldObjectController({
@@ -25,10 +26,16 @@ const usersListController = new TableFieldObjectController({
   ],
 })
 
-const handleAdd = () => alert('Добавить запись')
-const handleEdit = () => alert('Изменить запись')
-const handleDelete = () => alert('Удалить запись')
-const handleRemove = () => alert('Архивировать запись')
+const modalAlertNotification = new AlertController(false, 'info', true, 'В тестовом режиме никакие действия не производится! Объекты в NSMP не изменяются').show()
+const addModal = new ModalController('Добавить сотрудника')
+const editModal = new ModalController('Редактировать сотрудника')
+const deleteModal = new ModalController('Удалить сотрудника')
+const removeModal = new ModalController('Архивировать сотрудника')
+
+const handleAdd = () => addModal.show()
+const handleEdit = () => editModal.show()
+const handleDelete = () => deleteModal.show()
+const handleRemove = () => removeModal.show()
 
 watch(
   () => usersListController.selectedRowKeys,
@@ -39,7 +46,68 @@ watch(
 
 <template>
   <a-config-provider :theme="themeConfig">
-    <ModalForm />
+    <Modal :controller="addModal">
+      <template #alert>
+        <Alert :modelValue="modalAlertNotification" />
+      </template>
+      <template #form>
+        <p>Форма добавления нового объекта</p>
+      </template>
+      <template #footer>
+        <a-button type="primary" @click="addModal.hidden()">Сохранить</a-button>
+        <a-button type="text" @click="addModal.hidden()">Отмена</a-button>
+      </template>
+    </Modal>
+
+    <Modal :controller="editModal">
+      <template #alert>
+        <Alert :modelValue="modalAlertNotification" />
+      </template>
+      <template #form>
+        <p>Форма редактирования объекта</p>
+      </template>
+      <template #footer>
+        <a-button type="primary" @click="editModal.hidden()">Сохранить</a-button>
+        <a-button type="text" @click="editModal.hidden()">Отмена</a-button>
+      </template>
+    </Modal>
+
+    <Modal :controller="deleteModal">
+      <template #alert>
+        <Alert :modelValue="modalAlertNotification" />
+      </template>
+      <template #form>
+        <a-typography-text>Вы уверены что хотите удалить объекты?</a-typography-text>
+        <ul>
+            <li v-for="name in usersListController.getSelectedRows().map(row => row.name)" :key="name">
+              <a-typography-text type="secondary">{{ name }}</a-typography-text>
+            </li>
+        </ul>
+      </template>
+      <template #footer>
+        <a-button type="primary" @click="deleteModal.hidden()">Да</a-button>
+        <a-button type="text" @click="deleteModal.hidden()">Отмена</a-button>
+      </template>
+    </Modal>
+
+    <Modal :controller="removeModal">
+      <template #alert>
+        <Alert :modelValue="modalAlertNotification" />
+      </template>
+      <template #form>
+        <a-typography-text>Вы уверены что хотите переместить в архив объекты?</a-typography-text>
+        <ul>
+            <li v-for="name in usersListController.getSelectedRows().map(row => row.name)" :key="name">
+              <a-typography-text type="secondary">{{ name }}</a-typography-text>
+            </li>
+        </ul>
+      </template>
+      <template #footer>
+        <a-button type="primary" @click="removeModal.hidden()">Да</a-button>
+        <a-button type="text" @click="removeModal.hidden()">Отмена</a-button>
+      </template>
+    </Modal>
+
     <a-tabs type="card" :activeKey="tabGroupController.activeTab">
 
       <a-tab-pane key="1" tab="Пример формы">
@@ -58,18 +126,18 @@ watch(
                   </a-button>
                 </a-space>
 
-                <a-space :size="2" v-if="usersListController.getSelectedRows().length == 1">
-                  <a-button type="primary" class="cardButton" @click="handleEdit()">
+                <a-space :size="2" v-if="usersListController.getSelectedRows().length >= 1">
+
+                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.getSelectedRows().length == 1">
                     <EditIcon /> Редактировать
                   </a-button>
+
+                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.getSelectedRows().length > 1">
+                    <EditIcon /> Массовое редактировать
+                  </a-button>
+
                   <a-button type="primary" class="cardButton" @click="handleDelete()">
                     <DeleteIcon /> Удалить
-                  </a-button>
-                </a-space>
-
-                <a-space :size="2" v-if="usersListController.getSelectedRows().length > 1">
-                  <a-button type="primary" class="cardButton" @click="handleEdit()">
-                    <EditIcon /> Массовое редактировать
                   </a-button>
                 </a-space>
 

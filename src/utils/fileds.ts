@@ -248,6 +248,27 @@ export class AlertController {
     }
 }
 
+export class ModalController {
+    title: Ref<string>
+    visiable: Ref<boolean>
+
+    constructor(
+        title: string
+    ) {
+        this.title = ref(title)
+        this.visiable = ref(false)
+    }
+
+    show() {
+        this.visiable.value = true
+        return this
+    }
+    hidden() {
+        this.visiable.value = false
+        return this
+    }
+}
+
 export class AttrGroupController {
     public title: Ref<string>
     public show: Ref<boolean>
