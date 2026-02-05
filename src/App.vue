@@ -8,12 +8,12 @@ import FullForm from './components/FullForm.vue'
 
 import Modal from './components/naumen/Modal.vue'
 import ObjectList from './components/naumen/ObjectList.vue'
+import Alert from './components/naumen/Alert.vue'
 
 import PlusIcon from './assets/icons/plus.svg'
 import EditIcon from './assets/icons/edit.svg'
 import DeleteIcon from './assets/icons/delete.svg'
 import ArchiveIcon from './assets/icons/archive.svg'
-import Alert from './components/naumen/Alert.vue'
 
 const tabGroupController = new TabGroupController()
 const usersListController = new TableFieldObjectController({

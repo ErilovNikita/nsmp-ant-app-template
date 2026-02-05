@@ -2,7 +2,7 @@ import { SelectProps } from "ant-design-vue"
 import { ColumnsType } from "ant-design-vue/es/table"
 import { nextTick, ref, Ref } from "vue"
 
-export interface IObjectListRow {
+interface IObjectListRow {
     key: string | number
     id: string
     name: string
