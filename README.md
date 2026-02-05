@@ -228,7 +228,10 @@ const tableController = new TableFieldObjectController({
 ```TypeScript
 import { DropdownFieldObjectController } from './utils/fileds'
 
-const dropdownController = new DropdownFieldObjectController('Сотрудники', 'employee$employee')
+const dropdownController = new DropdownFieldObjectController(
+    'Сотрудники', 
+    'employee$employee'
+)
 ```
 
 ```TypeScript
@@ -251,7 +254,11 @@ const statusOptions = [
     { value: 'inactive', label: 'Неактивен' }
 ]
 
-const statusDropdown = new DropdownFieldDictionaryController('Статус', statusOptions, true)
+const statusDropdown = new DropdownFieldDictionaryController(
+    'Статус', 
+    statusOptions, 
+    true
+)
 ```
 
 ```TypeScript
