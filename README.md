@@ -89,8 +89,8 @@ npm run dev
 | `visiable` | `Ref<boolean>` | Показывается ли алерт |
 | `closable` | `Ref<boolean>` | Можно ли закрыть |
 | `showIcon` | `Ref<boolean>` | Показывать иконку |
-| `type` | `Ref<'success'|'info'|'warning'|'error'>` | Тип алерта |
-| `message` | `Ref<string|null>` | Сообщение алерта |
+| `type` | `Ref<'success'\|'info'\|'warning'\|'error'>` | Тип алерта |
+| `message` | `Ref<string\|null>` | Сообщение алерта |
 
 **Методы:**
 
