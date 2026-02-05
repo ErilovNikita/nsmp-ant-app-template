@@ -132,7 +132,7 @@ npm run dev
 |----------|-----|---------|
 | `title` | `Ref<string>` | Заголовок группы |
 | `show` | `Ref<boolean>` | Группа открыта/закрыта |
-| `activeKey` | `Ref<number|null>` | Активный элемент |
+| `activeKey` | `Ref<number\|null>` | Активный элемент |
 | `items` | `Ref<Array<[string,string]>>` | Элементы группы |
 
 **Методы:**
