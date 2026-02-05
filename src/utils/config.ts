@@ -15,7 +15,7 @@ export const DefaultFormState: UnwrapRef<IFormState> = reactive({
 })
 
 export const AttrNamesMap: Record<keyof IFormState, string> = {
-    someTextWithLoader: 'Выпопадающий список',
+    someTextWithLoader: 'Выпападающий список',
     someTextWithDescription: 'Поле с описанием',
     number: 'Целое число',
     dropdownList: 'Сотрудники',

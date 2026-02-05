@@ -9,4 +9,5 @@ const props = defineProps<{
 
 <template>
     <a-typography-title :level="props.level || 4">{{ props.text }}</a-typography-title>
+    <slot></slot>
 </template>

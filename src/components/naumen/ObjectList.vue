@@ -1,59 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { DropdownFieldObjectController } from '../../utils/fileds'
-import type { ColumnsType } from 'ant-design-vue/es/table'
+import { onMounted } from 'vue'
+import Caption from './Caption.vue'
+import type { TableFieldObjectController } from '../../utils/fileds'
 
-interface IRecord {
-  key: number
-  name: string
-}
+const props = defineProps<{
+  title?: string | null
+  showTitle?: boolean
+  controller: TableFieldObjectController
+}>()
 
-const tableData = ref<IRecord[]>([])
+const emit = defineEmits<{
+  (e: 'selection-change'): void
+}>()
 
-const columns: ColumnsType<IRecord> = [
-  { title: 'Имя', dataIndex: 'name', width: 300 },
-  { title: 'UUID', dataIndex: 'id', width: 300 }
-]
-
-const rowSelection = ref({
-  checkStrictly: false,
-  onChange: (selectedRowKeys: (string | number)[], selectedRows: IRecord[]) => {
-    console.log('selectedRowKeys', selectedRowKeys)
-    console.log('selectedRows', selectedRows)
-  },
-})
-
-const dropdownController = new DropdownFieldObjectController('Users', 'employee$employee')
-
-const loadTableData = async () => {
-  try {
-    await dropdownController.loadData()
-    tableData.value = dropdownController.options.value.map((item: any, index: number) => ({
-      key: index,
-      name: item.label,
-      id: item.value
-    }))
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-onMounted(() => {
-  loadTableData()
-})
+onMounted(() => props.controller.refresh())
 </script>
 
 <template>
-  <a-form-item style="margin-bottom: 10px;">
-    <a-space>
-      <a-button type="primary">Добавить</a-button>
-    </a-space>
-  </a-form-item>
+  <Caption v-if="props.title && props.showTitle == true" :text="props.title" />
+  <p v-if="props.title && props.showTitle == true"></p>
+  
+  <slot name="start"></slot>
 
   <a-table
-    :columns="columns"
-    :data-source="tableData"
-    :pagination="{ pageSize: 20 }"
-    :row-selection="rowSelection"
+    :columns="props.controller.columns"
+    :data-source="props.controller.tableData.value"
+    :loading="{
+      spinning: controller.loading.value,
+      tip: 'Загрузка данных…'
+    }"
+    :pagination="{ pageSize: props.controller.pageSize }"
+    :row-selection="props.controller.rowSelection"
   />
 </template>

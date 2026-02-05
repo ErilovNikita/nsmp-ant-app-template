@@ -1,5 +1,21 @@
 import { SelectProps } from "ant-design-vue"
+import { ColumnsType } from "ant-design-vue/es/table"
 import { nextTick, ref, Ref } from "vue"
+
+export interface IObjectListRow {
+    key: string | number
+    id: string
+    name: string
+    raw: any
+}
+
+interface TableFieldObjectControllerOptions {
+    metaClass: string
+    columns: ColumnsType<any>
+    pageSize?: number
+    enableSelection?: boolean
+    fetchUrl?: string
+}
 
 export class DropdownFieldObjectController {
     public title: Ref<string>
@@ -279,82 +295,125 @@ export class TabGroupController {
     }
 }
 
-export class TableFieldObjectController<T extends { key: string | number }> {
-  public columns: Ref<any[]>
-  public dataSource: Ref
-  public tableState: Ref
-  public metaClass: string
+export class TableFieldObjectController {
+    public loading = ref(false)
+    public page = ref(1)
+    public hasMore = ref(true)
+    public tableData = ref<IObjectListRow[]>([])
+    public selectedRowKeys = ref<(string | number)[]>([])
+    public rowSelection: any
+    public metaClass: string
+    public columns: ColumnsType<any>
+    public pageSize: number
+    public enableSelection: boolean
+    public fetchUrl: string
 
-  private searchToken = 0
+    private requestToken = 0
 
-  constructor(columns: any[], metaClass: string, pageSize: number = 100) {
-    this.columns = ref(columns)
-    this.dataSource = ref<T[]>([])
-    this.metaClass = metaClass
+    constructor(options: TableFieldObjectControllerOptions) {
+        this.metaClass = options.metaClass
+        this.columns = options.columns
+        this.pageSize = options.pageSize ?? 20
+        this.enableSelection = options.enableSelection ?? false
+        this.fetchUrl = options.fetchUrl ?? '/exec?func=modules.restModule.getObjectsByPages'
 
-    this.tableState = ref({
-      loading: false,
-      isSearchMode: false,
-      selectedRowKeys: [],
-      selectedRows: [],
-      pagination: {
-        page: 1,
-        pageSize,
-        total: 0,
-      },
-    })
-  }
-
-  // Загрузка данных
-  loadData = async () => {
-    if (this.tableState.value.loading) return
-
-    this.tableState.value.loading = true
-
-    try {
-      const { page } = this.tableState.value.pagination
-
-      const url =
-        `/exec?func=modules.restModule.getObjectsByPages` +
-        `&params=request,response,user` +
-        `&metaClass=${this.metaClass}` +
-        `&page=${page}`
-
-      const response = await jsApi.restCallAsJson(url, {}) as any
-
-      const results = response.results ?? []
-
-      this.dataSource.value = results.map((item: any, index: number) => ({
-        key: item.id ?? `${page}-${index}`,
-        ...item,
-      }))
-
-      this.tableState.value.pagination.total = response.pagination?.total ?? this.dataSource.value.length
-
-      console.log(this.tableState.value.pagination.total)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      this.tableState.value.loading = false
+        if (this.enableSelection) {
+            this.rowSelection = {
+                selectedRowKeys: this.selectedRowKeys.value,
+                onChange: (keys: (string | number)[]) => {
+                    this.selectedRowKeys.value.length = 0
+                    this.selectedRowKeys.value.push(...keys)
+                },
+            }
+        }
     }
-  }
 
-  // Сброс поиска
-  resetSearch() {
-    this.searchToken++
-    this.tableState.value.isSearchMode = false
-    this.tableState.value.pagination.page = 1
-    this.dataSource.value = []
-  }
+    loadPage = async (page = 1) => {
+        if (this.loading.value) return
+        if (!this.hasMore.value && page !== 1) return
 
-  // Row selection (AntD-ready)
-  get rowSelection() {
-    return {
-      selectedRowKeys: this.tableState.value.selectedRowKeys,
-      onChange: (keys: (string | number)[], rows: T[]) => {
-        this.tableState.value.selectedRowKeys = keys
-        this.tableState.value.selectedRows = rows
-      },
+        const token = ++this.requestToken
+        this.loading.value = true
+
+        try {
+            const url = `${this.fetchUrl}&params=request,response,user&metaClass=${this.metaClass}&page=${page}`
+
+            const response = await jsApi.restCallAsJson(url, {})
+            if (token !== this.requestToken) return
+
+            const resultsRaw = response?.results
+            const results = Array.isArray(resultsRaw) ? resultsRaw : []
+
+            const mapped = results.map((item: any) => ({
+                key: item.id,
+                id: item.id,
+                name: item.text ?? item.id,
+                raw: item,
+            }))
+
+            if (page === 1) {
+                this.tableData.value = mapped
+            } else {
+                this.tableData.value = [...this.tableData.value, ...mapped]
+            }
+
+            this.page.value = page + 1
+            this.hasMore.value = results.length > 0
+        } catch (e) {
+            console.error(e)
+        } finally {
+            if (token === this.requestToken) this.loading.value = false
+        }
     }
-  }
+
+    search = async (term?: string) => {
+        const value = term?.trim()
+        const token = ++this.requestToken
+
+        this.loading.value = true
+        this.page.value = 1
+        this.hasMore.value = true
+
+        try {
+            const url =
+                `${this.fetchUrl}` +
+                `&params=request,response,user` +
+                `&metaClass=${this.metaClass}` +
+                (value ? `&term=${encodeURIComponent(value)}` : '')
+
+            const response = await jsApi.restCallAsJson(url, {})
+            if (token !== this.requestToken) return
+
+            const results = response?.results ?? []
+
+            this.tableData.value = results.map((item: any) => ({
+                key: item.id,
+                id: item.id,
+                name: item.text ?? item.id,
+                raw: item,
+            }))
+        } catch (e) {
+            console.error(e)
+        } finally {
+            if (token === this.requestToken) {
+                this.loading.value = false
+            }
+        }
+    }
+
+    refresh = async () => {
+        this.page.value = 1
+        this.hasMore.value = true
+        await this.loadPage(1)
+    }
+
+    getSelectedRows(): IObjectListRow[] {
+        return this.tableData.value.filter(row =>
+            this.selectedRowKeys.value.includes(row.key)
+        )
+    }
+
+    clearSelection() {
+        this.selectedRowKeys.value = []
+    }
 }

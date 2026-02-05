@@ -166,6 +166,9 @@ h4.ant-typography {
 .ant-table > .ant-table-container > .ant-table-body > table > tbody.ant-table-tbody > tr.ant-table-row-selected > td {
     background: #f4f4f4 !important;
 }
+.ant-table-selection-column {
+    text-align: center !important;
+}
 ul.ant-pagination.ant-table-pagination {
     justify-content: flex-start !important;
 }
