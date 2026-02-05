@@ -4,7 +4,7 @@ import { nextTick, ref, Ref } from "vue"
 
 interface IObjectListRow {
     key: string | number
-    id: string
+    id: string | number
     name: string
     raw: any
 }
@@ -318,23 +318,26 @@ export class TabGroupController {
 
 export class TableFieldObjectController {
     public loading = ref(false)
-    public page = ref(1)
-    public hasMore = ref(true)
     public tableData = ref<IObjectListRow[]>([])
+    public allData = ref<IObjectListRow[]>([])
     public selectedRowKeys = ref<(string | number)[]>([])
     public rowSelection: any
+
     public metaClass: string
     public columns: ColumnsType<any>
-    public pageSize: number
+    public uiPageSize = ref(20)
     public enableSelection: boolean
     public fetchUrl: string
 
+    private apiPage = 1
+    public apiPageSize = 100
+    private hasMoreApi = true
     private requestToken = 0
 
     constructor(options: TableFieldObjectControllerOptions) {
         this.metaClass = options.metaClass
         this.columns = options.columns
-        this.pageSize = options.pageSize ?? 20
+        this.uiPageSize.value = options.pageSize ?? 20
         this.enableSelection = options.enableSelection ?? false
         this.fetchUrl = options.fetchUrl ?? '/exec?func=modules.restModule.getObjectsByPages'
 
@@ -349,21 +352,19 @@ export class TableFieldObjectController {
         }
     }
 
-    loadPage = async (page = 1) => {
-        if (this.loading.value) return
-        if (!this.hasMore.value && page !== 1) return
+    // --- Загрузка следующей страницы API ---
+    private loadApiPage = async () => {
+        if (!this.hasMoreApi || this.loading.value) return
 
         const token = ++this.requestToken
         this.loading.value = true
 
         try {
-            const url = `${this.fetchUrl}&params=request,response,user&metaClass=${this.metaClass}&page=${page}`
-
+            const url = `${this.fetchUrl}&params=request,response,user&metaClass=${this.metaClass}&page=${this.apiPage}`
             const response = await jsApi.restCallAsJson(url, {})
             if (token !== this.requestToken) return
 
-            const resultsRaw = response?.results
-            const results = Array.isArray(resultsRaw) ? resultsRaw : []
+            const results = Array.isArray(response?.results) ? response.results : []
 
             const mapped = results.map((item: any) => ({
                 key: item.id,
@@ -372,14 +373,9 @@ export class TableFieldObjectController {
                 raw: item,
             }))
 
-            if (page === 1) {
-                this.tableData.value = mapped
-            } else {
-                this.tableData.value = [...this.tableData.value, ...mapped]
-            }
-
-            this.page.value = page + 1
-            this.hasMore.value = results.length > 0
+            this.allData.value = [...this.allData.value, ...mapped]
+            this.apiPage += 1
+            this.hasMoreApi = !!response.pagination?.more
         } catch (e) {
             console.error(e)
         } finally {
@@ -387,54 +383,48 @@ export class TableFieldObjectController {
         }
     }
 
-    search = async (term?: string) => {
-        const value = term?.trim()
-        const token = ++this.requestToken
+    // --- Получаем данные для UI страницы ---
+    public getTableDataForPage = async (page: number) => {
+        const start = (page - 1) * this.uiPageSize.value
+        const end = start + this.uiPageSize.value
 
-        this.loading.value = true
-        this.page.value = 1
-        this.hasMore.value = true
-
-        try {
-            const url =
-                `${this.fetchUrl}` +
-                `&params=request,response,user` +
-                `&metaClass=${this.metaClass}` +
-                (value ? `&term=${encodeURIComponent(value)}` : '')
-
-            const response = await jsApi.restCallAsJson(url, {})
-            if (token !== this.requestToken) return
-
-            const results = response?.results ?? []
-
-            this.tableData.value = results.map((item: any) => ({
-                key: item.id,
-                id: item.id,
-                name: item.text ?? item.id,
-                raw: item,
-            }))
-        } catch (e) {
-            console.error(e)
-        } finally {
-            if (token === this.requestToken) {
-                this.loading.value = false
-            }
+        // докачиваем страницы API, пока не хватит данных для UI страницы
+        while (end > this.allData.value.length && this.hasMoreApi) {
+            await this.loadApiPage()
         }
+
+        this.tableData.value = this.allData.value.slice(start, end)
     }
 
-    refresh = async () => {
-        this.page.value = 1
-        this.hasMore.value = true
-        await this.loadPage(1)
+    // --- Меняем количество элементов на странице ---
+    public changePageSize = async (newSize: number, currentPage: number) => {
+        this.uiPageSize.value = newSize
+        await this.getTableDataForPage(currentPage)
     }
 
-    getSelectedRows(): IObjectListRow[] {
+    // --- Полная перезагрузка данных ---
+    public refresh = async () => {
+        this.apiPage = 1
+        this.allData.value = []
+        this.hasMoreApi = true
+        await this.loadApiPage()
+        await this.getTableDataForPage(1)
+    }
+
+    // --- Получаем выбранные строки ---
+    public getSelectedRows(): IObjectListRow[] {
         return this.tableData.value.filter(row =>
             this.selectedRowKeys.value.includes(row.key)
         )
     }
 
-    clearSelection() {
+    public clearSelection() {
         this.selectedRowKeys.value = []
+    }
+
+    // --- Для Ant Table: total элементов (для правильной работы пагинации) ---
+    public get total() {
+        // учитываем докачку еще не загруженных страниц
+        return this.allData.value.length + (this.hasMoreApi ? this.apiPageSize : 0)
     }
 }

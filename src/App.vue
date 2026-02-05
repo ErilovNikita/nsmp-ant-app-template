@@ -19,7 +19,7 @@ const tabGroupController = new TabGroupController()
 const usersListController = new TableFieldObjectController({
   metaClass: 'employee$employee',
   enableSelection: true,
-  pageSize: 20,
+  pageSize: 100,
   columns: [
     { title: 'Имя', dataIndex: 'name', width: 300 },
     { title: 'UUID', dataIndex: 'id', width: 300 },
@@ -79,8 +79,8 @@ watch(
       <template #form>
         <a-typography-text>Вы уверены что хотите удалить объекты?</a-typography-text>
         <ul>
-            <li v-for="name in usersListController.getSelectedRows().map(row => row.name)" :key="name">
-              <a-typography-text type="secondary">{{ name }}</a-typography-text>
+            <li v-for="row in usersListController.getSelectedRows()" :key="row.key">
+              <a-typography-text type="secondary">{{ row.name }}</a-typography-text>
             </li>
         </ul>
       </template>
@@ -97,8 +97,8 @@ watch(
       <template #form>
         <a-typography-text>Вы уверены что хотите переместить в архив объекты?</a-typography-text>
         <ul>
-            <li v-for="name in usersListController.getSelectedRows().map(row => row.name)" :key="name">
-              <a-typography-text type="secondary">{{ name }}</a-typography-text>
+            <li v-for="row in usersListController.getSelectedRows()" :key="row.key">
+              <a-typography-text type="secondary">{{ row.name }}</a-typography-text>
             </li>
         </ul>
       </template>
@@ -126,13 +126,13 @@ watch(
                   </a-button>
                 </a-space>
 
-                <a-space :size="2" v-if="usersListController.getSelectedRows().length >= 1">
+                <a-space :size="2" v-if="usersListController.selectedRowKeys.value.length >= 1">
 
-                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.getSelectedRows().length == 1">
+                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.selectedRowKeys.value.length == 1">
                     <EditIcon /> Редактировать
                   </a-button>
 
-                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.getSelectedRows().length > 1">
+                  <a-button type="primary" class="cardButton" @click="handleEdit()" v-if="usersListController.selectedRowKeys.value.length > 1">
                     <EditIcon /> Массовое редактировать
                   </a-button>
 
@@ -141,7 +141,7 @@ watch(
                   </a-button>
                 </a-space>
 
-                <a-space :size="2" v-if="usersListController.getSelectedRows().length >= 1">
+                <a-space :size="2" v-if="usersListController.selectedRowKeys.value.length >= 1">
                   <a-button type="primary" class="cardButton" @click="handleRemove()">
                     <ArchiveIcon /> Переместить в архив
                   </a-button>
