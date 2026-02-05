@@ -8,9 +8,9 @@
 > Данный шаблон использует форк библиотки [`@nsmp/js-api`](https://github.com/ErilovNikita/js-api), адаптированный под работу с `Vue`
 
 ## Особенности
-- Шаблон на Vue 3 Composition API.
-- UI построен на Ant Design Vue.
-- Полная интеграция `@nsmp/js-api`
+- Шаблон на [Vue 3 Composition API](https://vuejs.org/guide/extras/composition-api-faq).
+- UI построен на [Ant Design Vue](https://antdv.com/).
+- Полная интеграция [`@nsmp/js-api`](https://github.com/ErilovNikita/js-api).
 
 
 
