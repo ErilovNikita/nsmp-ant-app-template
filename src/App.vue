@@ -19,10 +19,12 @@ const tabGroupController = new TabGroupController()
 const usersListController = new TableFieldObjectController({
   metaClass: 'employee$employee',
   enableSelection: true,
-  pageSize: 100,
+  pageSize: 10,
   columns: [
-    { title: 'Имя', dataIndex: 'name', width: 300 },
-    { title: 'UUID', dataIndex: 'id', width: 300 },
+    { title: 'Имя', dataIndex: 'name', width: 400 },
+    { title: 'UUID', dataIndex: 'id', width: 100 },
+    { title: 'UUID', dataIndex: 'id', width: 100 },
+    { title: 'UUID', dataIndex: 'id', width: 100 },
   ],
 })
 
