@@ -25,7 +25,7 @@ export class DropdownFieldObjectController {
     public dropdownOpen: Ref
     private searchToken: number
 
-    constructor(title: string, metaClass: string, allowEmptyValue: boolean = false) {
+    constructor(title: string, metaClass: string, allowEmptyValue: boolean = false, initialValue?: { value: string; label: string }) {
         this.title = ref(title)
         this.options = ref<SelectProps['options']>([])
         this.dropdownOpen = ref(false)
@@ -38,6 +38,7 @@ export class DropdownFieldObjectController {
             isSearchMode: false,
         })
         this.metaClass = metaClass
+        if (initialValue) { this.options.value = [initialValue] }
 
         this.loadData()
     }
