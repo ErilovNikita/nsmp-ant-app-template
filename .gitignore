@@ -41,6 +41,9 @@ out/
 # Vite cache
 .vite/
 .vite-cache/
+docs/.vitepress/.temp/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 # TypeScript
 *.tsbuildinfo

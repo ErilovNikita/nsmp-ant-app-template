@@ -23,8 +23,11 @@ npm run dev
 - Универсальный localStorage-кэш для данных формы
 
 ## Документация
-- [Обзор документации](docs/README.md)
-- [Установка](docs/getting-started/installation.md)
-- [Контроллеры](docs/controllers/README.md)
-- [Компоненты](docs/components/README.md)
-- [Сервисы](docs/services/README.md)
+Красивая версия документации публикуется через VitePress:
+- [Открыть документацию](https://erilovnikita.github.io/nsmp-ant-app-template/)
+- [Локальная документация](docs/)
+
+Локальный запуск:
+```sh
+npm run docs:dev
+```

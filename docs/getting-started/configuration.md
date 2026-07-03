@@ -6,7 +6,7 @@
 ## Базовый пример
 В репозитории есть `example.env` с набором переменных:
 
-```env
+```txt
 VITE_ACCESS_KEY=TOKEN
 VITE_APP_URL=http://localhost:5173/
 VITE_APP_REAL_URL=URL_NSD
@@ -69,7 +69,7 @@ Vite умеет загружать env-файлы по текущему mode. Э
 
 ## Пример разработки
 `.env.local`:
-```env
+```txt
 VITE_ACCESS_KEY=local-token
 VITE_APP_URL=http://localhost:5173/
 VITE_APP_REAL_URL=https://dev.example.local
@@ -82,7 +82,7 @@ VITE_USER_LOGIN=developer
 
 ## Пример dev
 `.env.development`:
-```env
+```txt
 VITE_APP_URL=http://localhost:5173/
 VITE_APP_REAL_URL=https://dev-nsmp.example.com
 VITE_APP_CODE=nsmp-ant-app-test
@@ -93,7 +93,7 @@ VITE_REST_PATH=rest
 
 ## Пример production-сборки
 `.env.production`:
-```env
+```txt
 VITE_APP_URL=https://apps.example.com/nsmp-ant-app-test/
 VITE_APP_REAL_URL=https://nsmp.example.com
 VITE_APP_CODE=nsmp-ant-app-test
