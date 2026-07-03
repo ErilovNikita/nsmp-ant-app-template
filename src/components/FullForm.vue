@@ -81,9 +81,8 @@ function onFinishFailed() {
 
 </script>
 <template>
-    <div style="display: flex !important;">
-        
-        <div style="width: 60% !important;">
+    <a-row>
+        <a-col :span="15" id="selector-left">
             <a-form layout="vertical" :model="formState" autocomplete="off" @finish="finish" @finishFailed="onFinishFailed">
 
                 <!-- Алерт кеша -->
@@ -169,9 +168,9 @@ function onFinishFailed() {
                     <a-button type="primary" html-type="submit">Сохранить</a-button>
                 </a-form-item>
             </a-form>
-        </div>
+        </a-col>
 
-        <div style="width: 40% !important; margin-left:20px;">
+        <a-col :span="9" id="selector-right">
             <Alert :modelValue="versionController" />
 
             <AttrGroup :config="attrGroup" :values="formState">
@@ -193,11 +192,18 @@ function onFinishFailed() {
                     </a-form-item>
                 </template>
             </AttrGroup>
-        </div>
-    </div>
+        </a-col>
+    </a-row>
 </template>
 
 <style scoped>
+#selector-left {
+    padding-right: 20px;
+}
+#selector-right {
+    padding-left: 20px;
+}
+
 .cache-data-form-item {
     margin-bottom: 0;
 }
