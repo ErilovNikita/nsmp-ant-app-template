@@ -3,12 +3,14 @@ import { watch } from 'vue'
 
 import { AttrGroupController, DropdownFieldObjectController, DropdownFieldDictionaryController, AlertController } from '../domain/controllers'
 import { IFormState } from '../types'
-import { DefaultFormState, AttrNamesMap } from '../domain/config'
+import { DefaultFormState, AttrNamesMap, GitProject } from '../domain/config'
 import { useFormCache } from '../composables/useFormCache'
 
 import Alert from './naumen/Alert.vue'
 import AttrGroup from './naumen/AttrGroup.vue'
 import Caption from './naumen/Caption.vue'
+import { getLastReleaseTag } from '../services/git/github.ts'
+import { compareVersions, getLocalVersion } from '../services/version.ts'
 
 const formState: IFormState = DefaultFormState
 const { formattedCachedData, restoreCacheAlert, restoreCachedData } = useFormCache(formState)
@@ -25,6 +27,28 @@ const radioField = new DropdownFieldDictionaryController(AttrNamesMap.someTextWi
 ], false)
 const fieldDescription = new AlertController(false, "info", true, "Какое-то информационное сообщение").show()
 const alertForm = new AlertController(false, "info", true)
+const versionController = new AlertController(false, 'info', true)
+
+versionController.setMessage('Обновление данных о версии приложения...')
+getLastReleaseTag(GitProject.owner, GitProject.repo).then(remoteVersion => {
+    switch(compareVersions(getLocalVersion(), remoteVersion)) {
+        case 1:
+            versionController.setType('warning')
+            versionController.setMessage(`Вы используете тестовую версию ${getLocalVersion()}! Свяжитесь с поддержкой для исправления.`)
+            break
+        case -1:
+            versionController.setType('error')
+            versionController.setMessage(`Ваша версия ${getLocalVersion()} устарела! Сбросьте кеш браузера, чтобы получить новую версию.`)
+            break
+        case 0:
+            versionController.setType('success')
+            versionController.setMessage(`Используется актуальная версия ${getLocalVersion()}`)
+            break
+    }
+}) .catch(e => {
+    versionController.setType('error')
+    versionController.setMessage((e as Error).message + ". Свяжитесь с поддержкой для исправления.") 
+})
 
 const attrGroup = new AttrGroupController(
     "Параметры на форме",
@@ -148,6 +172,8 @@ function onFinishFailed() {
         </div>
 
         <div style="width: 40% !important; margin-left:20px;">
+            <Alert :modelValue="versionController" />
+
             <AttrGroup :config="attrGroup" :values="formState">
                 <template v-slot:end>
                     <a-form-item label="Двойная дата (Начало)" style="margin-bottom: -10px;">

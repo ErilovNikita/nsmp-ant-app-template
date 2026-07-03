@@ -9,7 +9,8 @@ export const getLastReleaseTag = async (
     const data:any[] = await response.json()
     const releases = data.filter((item: any) => item.prerelease === false)
 
-    if (!releases[0].tag_name) throw new Error('Некорректный ответ GitHub API: отсутствует tag_name')
+    if (!releases) throw new Error('Некорректный ответ GitHub API: отсутствует tag_name')
+    if (!releases[0]) throw new Error('Релизы отсутствуют')
 
     return releases[0].tag_name
   } catch (error) {

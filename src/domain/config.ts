@@ -8,6 +8,11 @@ export const FormCache = reactive({
   lifetimeMs: 30 * 60 * 1000, // 30 минут
 })
 
+export const GitProject: UnwrapRef<any> = reactive({
+  owner: "ErilovNikita",
+  repo: "nsmp-ant-app-template"
+})
+
 export const DefaultFormState: UnwrapRef<IFormState> = reactive({
     someTextWithLoader: null,
     someTextWithDescription: '',

@@ -11,3 +11,12 @@ export const compareVersions = (localVersion: string, remoteVersion: string): -1
 
   return 0
 }
+
+/**
+ * Получает текущую версию приложения из глобальной константы.
+ *
+ * @returns Тег текущей версии приложения.
+ */
+export const getLocalVersion = (): string => {
+  return __APP_VERSION__
+}
