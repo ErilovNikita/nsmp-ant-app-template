@@ -3,6 +3,9 @@ layout: home
 hero:
   name: NSMP Ant App Template
   tagline: Vue 3, Ant Design Vue, контроллеры интерфейса, сервисы и кэш формы для NSMP
+  image:
+    src: /logo.png
+    alt: NSMP Ant App Template
   actions:
     - theme: brand
       text: Начать

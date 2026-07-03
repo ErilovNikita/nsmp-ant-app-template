@@ -8,6 +8,7 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
+    logo: '/logo.png',
     nav: [
       { text: 'Установка', link: '/getting-started/installation' },
       { text: 'Контроллеры', link: '/controllers/' },
