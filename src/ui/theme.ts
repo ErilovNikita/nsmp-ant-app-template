@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-const themeConfig: Record<string, any> = ref({
+const naumen: Record<string, any> = ref({
     components: {
         Button: {
             colorPrimary: '#ec8e2b',
@@ -32,4 +32,4 @@ const themeConfig: Record<string, any> = ref({
     }
 })
 
-export default themeConfig
+export default naumen

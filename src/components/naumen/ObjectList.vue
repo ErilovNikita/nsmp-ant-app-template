@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Caption from './Caption.vue'
-import type { TableFieldObjectController } from '../../utils/fileds'
+import type { TableFieldObjectController } from '../../domain/controllers'
 
 const props = defineProps<{
   title?: string | null
   showTitle?: boolean
   controller: TableFieldObjectController
-}>()
-
-const emit = defineEmits<{
-  (e: 'selection-change'): void
 }>()
 
 onMounted(() => props.controller.refresh())

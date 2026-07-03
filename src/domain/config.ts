@@ -1,7 +1,12 @@
 import type { UnwrapRef } from 'vue'
 import { reactive } from 'vue'
 
-import { IFormState } from './types'
+import { IFormState } from '../types'
+
+export const FormCache = reactive({
+  key: `FormContentPresenter#${__APP_NAME__}#records`,
+  lifetimeMs: 30 * 60 * 1000, // 30 минут
+})
 
 export const DefaultFormState: UnwrapRef<IFormState> = reactive({
     someTextWithLoader: null,

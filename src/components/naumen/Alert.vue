@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlertController } from '../../utils/fileds'
+import { AlertController } from '../../domain/controllers'
 
 const { modelValue } = defineProps<{
     modelValue: AlertController
@@ -16,6 +16,9 @@ const { modelValue } = defineProps<{
     >
         <template #message>
             {{ modelValue.message.value }}
+        </template>
+        <template #action>
+            <slot name="action"></slot>
         </template>
     </a-alert>
 </template>

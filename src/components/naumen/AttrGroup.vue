@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { AttrGroupController } from '../../utils/fileds'
+import { AttrGroupController } from '../../domain/controllers'
 
-const props = defineProps<{
+defineProps<{
     config: AttrGroupController,
     values: any
 }>()

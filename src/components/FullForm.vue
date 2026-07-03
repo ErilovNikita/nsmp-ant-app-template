@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { watch } from 'vue'
 
-import { AttrGroupController, DropdownFieldObjectController, DropdownFieldDictionaryController, AlertController } from '../utils/fileds'
-import { IFormState } from '../utils/types'
-import { DefaultFormState, AttrNamesMap } from '../utils/config'
+import { AttrGroupController, DropdownFieldObjectController, DropdownFieldDictionaryController, AlertController } from '../domain/controllers'
+import { IFormState } from '../types'
+import { DefaultFormState, AttrNamesMap } from '../domain/config'
+import { useFormCache } from '../composables/useFormCache'
 
-import Alert from '../components/naumen/Alert.vue'
-import AttrGroup from '../components/naumen/AttrGroup.vue'
-import Caption from '../components/naumen/Caption.vue'
+import Alert from './naumen/Alert.vue'
+import AttrGroup from './naumen/AttrGroup.vue'
+import Caption from './naumen/Caption.vue'
 
 const formState: IFormState = DefaultFormState
+const { formattedCachedData, restoreCacheAlert, restoreCachedData } = useFormCache(formState)
 
 const employeeDropdownField = new DropdownFieldObjectController(AttrNamesMap.dropdownList, 'employee$employee', true)
 const sampleDropdownField = new DropdownFieldDictionaryController(AttrNamesMap.someTextWithLoader, [
@@ -30,6 +32,8 @@ const attrGroup = new AttrGroupController(
         .filter(([key]) => key !== 'rangePicker')
         .map(([key, value]) => [value as string, key as keyof IFormState])
 ).open()
+
+const cacheAttrGroup = new AttrGroupController("Данные в кеше").open()
 
 watch(
     () => formState.someTextWithLoader,
@@ -58,6 +62,13 @@ function onFinishFailed() {
         <div style="width: 60% !important;">
             <a-form layout="vertical" :model="formState" autocomplete="off" @finish="finish" @finishFailed="onFinishFailed">
 
+                <!-- Алерт кеша -->
+                <Alert :modelValue="restoreCacheAlert">
+                    <template #action>
+                        <a-button class="restore-cache-button" type="link" @click="restoreCachedData">Восстановить</a-button>
+                    </template>
+                </Alert>
+                
                 <!-- Сообщение по странице -->
                 <Alert :modelValue="alertForm" />
 
@@ -147,6 +158,55 @@ function onFinishFailed() {
                     </a-form-item>
                 </template>
             </AttrGroup>
+
+            <AttrGroup :config="cacheAttrGroup" :values="formState">
+                <template v-slot:end>
+                    <a-form-item class="cache-data-form-item">
+                        <div class="cache-data-label">Данные в кеше</div>
+                        <pre class="cache-data-value">{{ formattedCachedData }}</pre>
+                    </a-form-item>
+                </template>
+            </AttrGroup>
         </div>
     </div>
 </template>
+
+<style scoped>
+.cache-data-form-item {
+    margin-bottom: 0;
+}
+
+.restore-cache-alert {
+    margin-bottom: 12px;
+}
+
+.cache-data-label {
+    margin-bottom: 6px;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.cache-data-value {
+    max-height: 280px;
+    margin: 0;
+    padding: 10px 12px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f6f8fa;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    color: #323232;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.restore-cache-button {
+    padding: 0;
+    margin-top: -3px !important;
+    margin-bottom: -3px !important;
+    height: auto;
+}
+
+</style>

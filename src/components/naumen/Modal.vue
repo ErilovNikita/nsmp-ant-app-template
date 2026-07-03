@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ModalController } from '../../utils/fileds'
+import type { ModalController } from '../../domain/controllers'
 
 const props = defineProps<{
     controller: ModalController

@@ -4,8 +4,8 @@ import '@iframe-resizer/child'
 import { initializeJsApi, InitVariable} from '@nsmp/js-api'
 import Antd from 'ant-design-vue';
 
-import './assets/styles/antCustomStyles.css'
-import './assets/styles/main.css'
+import './styles/ant-overrides.css'
+import './styles/global.css'
 
 const mock = {}
 const env = new InitVariable(

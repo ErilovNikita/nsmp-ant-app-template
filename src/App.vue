@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import themeConfig from './themeProvider'
+import naumen from './ui/theme.ts'
 import { watch } from 'vue'
 
-import { TabGroupController, TableFieldObjectController, ModalController, AlertController} from './utils/fileds'
+import { TabGroupController, TableFieldObjectController, ModalController, AlertController} from './domain/controllers'
 
 import FullForm from './components/FullForm.vue'
 
@@ -47,7 +47,7 @@ watch(
 </script>
 
 <template>
-  <a-config-provider :theme="themeConfig">
+  <a-config-provider :theme="naumen">
     <Modal :controller="addModal">
       <template #alert>
         <Alert :modelValue="modalAlertNotification" />
