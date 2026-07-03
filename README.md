@@ -6,7 +6,7 @@
 ![nsmp support](https://img.shields.io/badge/NSMP-%3E%3D4.17.5-blue)
 
 <p align="center">
-  <img src="./docs/logo.png" alt="NSMP Ant App Template logo" width="512" height="512">
+  <img src="./docs/public/logo.png" alt="NSMP Ant App Template logo" width="512" height="512">
 </p>
 
 > [!TIP]
