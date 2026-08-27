@@ -1,6 +1,9 @@
 # NSMP Ant App Template
 > Шаблон встроенного веб-приложения на Vue 3 и Ant Design Vue для NSMP
 
+> [!WARNING]
+> Репозиторий больше не поддерживается и архивирован. Дальнейшая разработка ведётся в репозитории [`nsmp-vue-components`](https://github.com/ErilovNikita/nsmp-vue-components).
+
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/ErilovNikita/nsmp-ant-app-template?label=Version)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ![nsmp support](https://img.shields.io/badge/NSMP-%3E%3D4.17.5-blue)
